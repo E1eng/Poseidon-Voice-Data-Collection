@@ -47,10 +47,14 @@ app.use(
 );
 
 // --- Middleware & Routing ---
-app.use(express.static(__dirname));
+/ --- Middleware & Routing ---
+// Sajikan semua file dari folder 'public'
+const publicPath = path.join(__dirname, 'public');
+app.use(express.static(publicPath));
 
+// Rute utama untuk menyajikan halaman (ambil dari folder public)
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'index.html'));
+    res.sendFile(path.join(publicPath, 'index.html'));
 });
 
 // --- Daftar Koleksi & Konfigurasi API ---
