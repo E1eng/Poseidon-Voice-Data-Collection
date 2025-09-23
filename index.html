@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Poseidon Voice Data Collection</title>
+    <style>
+    /* Impor font Manrope dari Google Fonts */
+    @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;700;900&display=swap');
+    
+    :root {
+        --bg-color: #000000;
+        --card-bg: #0A0F1A;
+        --border-color: rgba(0, 194, 255, 0.25);
+        --glow-color: rgba(0, 194, 255, 0.5);
+        --accent-color: #00c2ff;
+        --text-primary: #ffffff;
+        --text-secondary: #a0b3d1;
+    }
+
+    body {
+        font-family: 'Manrope', sans-serif;
+        background-color: var(--bg-color);
+        background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiMxNDE0MTQiPjxwYXRoIGQ9Ik0wIDQwTDQwIDQwIDQwIDAgMCAwWiBNNDAgMjBMMjAgNDAgMCAyMCAyMCAwWiIgZmlsbC1vcGFjaXR5PSIuMiIvPjxwYXRoIGQ9Ik0yMCAwTDBIDIwIDIwIDQwIDQwIDIwWiIgZmlsbC1vcGFjaXNpdHk9Ii4xIi8+PC9nPjwvZ34=');
+        background-attachment: fixed;
+        color: var(--text-primary);
+        margin: 0;
+        padding: 20px;
+        padding-top: 110px;
+        box-sizing: border-box;
+    }
+    
+    #particles-js {
+        position: fixed; width: 100%; height: 100%;
+        top: 0; left: 0; z-index: -1;
+    }
+
+    .container {
+        max-width: 1400px;
+        margin: 0 auto;
+    }
+
+    .top-nav {
+        position: fixed; top: 0; left: 0; width: 100%;
+        padding: 15px 20px;
+        display: flex; justify-content: space-between; align-items: center;
+        background: rgba(1, 4, 9, 0.8);
+        backdrop-filter: blur(10px);
+        border-bottom: 1px solid var(--border-color);
+        z-index: 100; box-sizing: border-box;
+    }
+
+    .logo {
+        display: flex; align-items: center; gap: 12px;
+        font-size: 1.1em; font-weight: 900;
+        text-decoration: none;
+        
+        background: linear-gradient(90deg, var(--accent-color), #ffffff, var(--accent-color));
+        background-size: 200% 200%;
+        -webkit-background-clip: text; background-clip: text;
+        color:#ffffff;
+        text-shadow: 0 0 10px var(--glow-color);
+        transition: all 0.5s ease;
+    }
+    .logo:hover {
+        background-position: -100% 0;
+        text-shadow: 0 0 20px var(--glow-color);
+    }
+    
+    .logo img {
+        width: 32px; height: 32px;
+        transition: transform 0.5s ease;
+    }
+    
+    .logo:hover img {
+        transform: rotate(360deg);
+    }
+
+   #status {
+            font-family: 'Roboto Mono', monospace; font-size: 0.9em; 
+            color: var(--text-secondary); background-color: rgba(0,0,0,0.3);
+             border-radius: 6px; left: 0%; margin-left: 60px;
+        }
+    
+    .total-card {
+        background: var(--card-bg); border: 1px solid var(--border-color);
+        padding: 25px; border-radius: 16px; margin-bottom: 30px;
+        box-shadow: 0 0 30px rgba(0, 194, 255, 0.1);
+        text-align: center;
+    }
+    
+    .total-card h2 {
+        margin: 0 0 10px 0; font-size: 1em;
+        font-weight: 500; color: var(--text-secondary);
+    }
+    #total-count-display {
+        font-size: 3.5em; font-weight: 900;
+        color: white; line-height: 1;
+    }
+
+    .data-list {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+
+    .data-card {
+        display: flex; align-items: center; background-color: var(--card-bg);
+        border: 1px solid var(--border-color); border-radius: 12px;
+        padding: 20px 15px;
+        transition: all 0.3s ease;
+    }
+    .data-card:hover {
+        transform: scale(1.02);
+        border-color: var(--accent-color);
+        box-shadow: 0 0 20px rgba(0, 194, 255, 0.2);
+    }
+
+    .card-info {
+        flex-grow: 1; display: flex; align-items: center; gap: 15px;
+    }
+    .flag-icon img { width: 32px; height: auto; border-radius: 4px; }
+    
+    /* --- PERUBAHAN UKURAN FONT KARTU --- */
+    .name { 
+        font-size: 1em; /* Ukuran nama dikecilkan */
+        font-weight: 700; 
+    }
+    .card-count {
+        font-size: 1.5em; /* Ukuran angka dikecilkan */
+        font-weight: 700;
+        color: var(--text-primary); 
+        min-width: 80px; 
+        text-align: right;
+    }
+    /* --- AKHIR PERUBAHAN --- */
+
+    .site-footer {
+        margin-top:60px; text-align: center;
+        font-size: 0.9em; color: var(--text-secondary);
+    }
+    .footer-link {
+    color: var(--text-secondary);
+    text-decoration: none;
+    position: relative; /* Diperlukan untuk pseudo-element */
+    padding-bottom: 4px; /* Beri sedikit ruang untuk garis */
+}
+
+.footer-link::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    transform: scaleX(0); /* Mulai dari lebar 0 */
+    height: 2px;
+    bottom: 0;
+    left: 0;
+    background-color: var(--accent-color);
+    transform-origin: bottom right;
+    transition: transform 0.3s ease-out;
+}
+
+.footer-link:hover::after {
+    transform: scaleX(1); /* Lebarkan menjadi 100% */
+    transform-origin: bottom left;
+}
+    
+    /* Desktop Styles */
+    @media (min-width: 768px) {
+        
+        .top-nav { padding: 15px 40px; }
+        .logo { font-size: 1.2em; }
+        .logo img { width: 40px; height: 40px; }
+        #total-count-display { font-size: 4em; }
+        .data-list { grid-template-columns: repeat(2, 1fr); }
+        .data-card { padding: 25px; }
+        .flag-icon img { width: 40px; }
+        .name { 
+            font-size: 1.1em;
+        }
+
+        /* --- PERUBAHAN UKURAN FONT KARTU DESKTOP --- */
+        .name { 
+            font-size: 1.25em; /* Sesuaikan ukuran nama di desktop */
+        }
+        .card-count { 
+            font-size: 1.4em; /* Sesuaikan ukuran angka di desktop */
+        }
+        /* --- AKHIR PERUBAHAN --- */
+    }
+
+    @media (min-width: 1240px) {
+        .data-list { grid-template-columns: repeat(4, 1fr); }
+    }
+</style>
+</head>
+<body>
+
+    <div id="particles-js"></div>
+
+    <nav class="top-nav">
+        <a href="https://app.psdn.ai/" target="_blank" rel="noopener noreferrer" class="logo">
+            <img src="logo.jpg" alt="Poseidon Logo">
+            <span>Poseidon Voice Data Collection</span>
+        </a>
+        <div id="status">INITIALIZING...</div>
+    </nav>
+
+    <div class="container">
+        <div class="total-card">
+            <h2>TOTAL VOICE COLLECTED</h2>
+            <div id="total-count-display">0</div>
+        </div>
+        
+        <div class="data-list" id="data-list">
+            </div>
+
+        <footer class="site-footer">
+            <p><a href="https://x.com/EL3NG" target="_blank" rel="noopener noreferrer" class="footer-link">Developed by eLeng</a></p>
+        </footer>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+
+    <script>
+        // ... (seluruh kode JavaScript Anda dari sebelumnya bisa disalin ke sini, tidak ada yang perlu diubah) ...
+        particlesJS('particles-js', { particles: { number: { value: 80, density: { enable: true, value_area: 800 } }, color: { value: '#00e1ff' }, shape: { type: 'circle' }, opacity: { value: 0.5, random: true }, size: { value: 3, random: true }, line_linked: { enable: true, distance: 150, color: '#00e1ff', opacity: 0.2 }, move: { enable: true, speed: 2, direction: 'none', random: false, straight: false, out_mode: 'out' } }, interactivity: { detect_on: 'canvas', events: { onhover: { enable: true, mode: 'repulse' }, onclick: { enable: true, mode: 'push' } }, modes: { repulse: { distance: 100, duration: 0.4 }, push: { particles_nb: 4 } } }, retina_detect: true });
+        const statusEl = document.getElementById('status');
+        const listEl = document.getElementById('data-list');
+        const totalCountEl = document.getElementById('total-count-display');
+        const countryCodeMap = { 'Indonesian': 'id', 'Spanish': 'es', 'Korean': 'kr', 'Portuguese': 'pt', 'Turkish': 'tr', 'Urdu': 'pk', 'Hindi': 'in', 'Arabic': 'sa', 'Russian': 'ru', 'Marathi': 'in', 'Mandarin': 'cn', 'Vietnamese': 'vn', 'French': 'fr', 'German': 'de', 'Japanese': 'jp', 'English': 'gb' };
+        const socket = new WebSocket('ws://localhost:3000');
+        socket.onopen = () => statusEl.textContent = 'CONNECTION ESTABLISHED';
+        socket.onclose = () => statusEl.textContent = 'CONNECTION TERMINATED';
+        socket.onmessage = (event) => {
+            const message = JSON.parse(event.data);
+            if (message.type === 'sorted-data') {
+                statusEl.textContent = `LAST SYNC: ${new Date().toLocaleTimeString('id-ID')}`;
+                updateDashboard(message.data);
+            }
+        };
+        function updateDashboard(data) {
+            let totalCount = 0;
+            if (window.innerWidth >= 768) { /* server-side sort */ } else { data.sort((a, b) => a.name.localeCompare(b.name)); }
+            listEl.innerHTML = '';
+            data.forEach(item => {
+                totalCount += item.count;
+                const card = document.createElement('div');
+                card.className = 'data-card';
+                const countryCode = countryCodeMap[item.name] || 'xx';
+                const flagImageUrl = `https://flagcdn.com/w40/${countryCode}.png`;
+                card.innerHTML = `<div class="card-info"><span class="flag-icon"><img src="${flagImageUrl}" alt="Bendera ${item.name}"></span><span class="name">${item.name}</span></div><div class="card-count">${new Intl.NumberFormat('id-ID').format(item.count)}</div>`;
+                listEl.appendChild(card);
+            });
+            animateCount(totalCountEl, totalCount);
+        }
+        function animateCount(element, newCount) {
+            const currentCount = parseInt(element.innerText.replace(/\./g, '')) || 0;
+            if (currentCount === newCount) return;
+            const duration = 500;
+            let startTime = null;
+            function animationStep(timestamp) {
+                if (!startTime) startTime = timestamp;
+                const progress = Math.min((timestamp - startTime) / duration, 1);
+                const animatedValue = Math.floor(progress * (newCount - currentCount) + currentCount);
+                element.innerText = new Intl.NumberFormat('id-ID').format(animatedValue);
+                if (progress < 1) requestAnimationFrame(animationStep);
+            }
+            requestAnimationFrame(animationStep);
+        }
+    </script>
+</body>
+</html>
