@@ -47,8 +47,6 @@ app.use(
 );
 
 // --- Middleware & Routing ---
-/ --- Middleware & Routing ---
-// Sajikan semua file dari folder 'public'
 const publicPath = path.join(__dirname, 'public');
 app.use(express.static(publicPath));
 
