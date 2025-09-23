@@ -9,14 +9,19 @@ import { fileURLToPath } from 'url';
 const app = express();
 const server = http.createServer(app);
 const wss = new WebSocketServer({ server });
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// --- Middleware untuk Menyajikan File Statis (HTML, CSS, Gambar) ---
-// Ini penting agar index.html dan logo.jpg bisa diakses
+// --- Middleware & Routing ---
+// Sajikan semua file di folder ini (index.html, logo.jpg, dll.)
 app.use(express.static(__dirname));
+
+// Rute utama untuk menyajikan halaman
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'index.html'));
+});
 
 // --- Daftar Koleksi & Konfigurasi API ---
 const collections = [
@@ -26,56 +31,51 @@ const collections = [
     { name: 'Hindi', address: '0x93693a4702adcBE9f2D7463544904019b8cDCD2b' }, { name: 'Arabic', address: '0x21419C6cB5d3910C04970b181C922862aAd6a6C0' },
     { name: 'Russian', address: '0x441C53b6005cB68d57de4b2c49783cba5cf25897' }, { name: 'Marathi', address: '0xA3383565Fa95d999174F13aB122EA4C750462265' },
     { name: 'Mandarin', address: '0x75F5a4Fadf6dE22E4373538A2F35636433896a1a' }, { name: 'Vietnamese', address: '0xceC8707D8e333f1d355fc52f34EB8daE822Df50E' },
-{ name: 'French', address: '0x91f51E0b65174b232997279Bcf1b248D039cFB8b' }, { name: 'German', address: '0xB49136C68d7Fa8D6343488720F9411bab83dE90d' },
+    { name: 'French', address: '0x91f51E0b65174b232997279Bcf1b248D039cFB8b' }, { name: 'German', address: '0xB49136C68d7Fa8D6343488720F9411bab83dE90d' },
     { name: 'Japanese', address: '0xEDd28Fa1C46Ad0b444bBC9e12Afa7d7807719574' }, { name: 'English', address: '0xD774a3Ba7e916C62F16B2c068023EA526E3Ac33E' }
 ];
 const url = 'https://api.storyapis.com/api/v4/collections';
 
 // --- Logika WebSocket ---
 wss.on('connection', (ws) => {
-    console.log('Browser terhubung!');
-    ws.on('close', () => console.log('Koneksi browser terputus.'));
+    console.log('Connected!');
+    ws.on('close', () => console.log('Disconnected'));
 });
 
 // --- Fungsi Pengambilan & Penyiaran Data ---
 const fetchDataAndBroadcast = async () => {
-    // Mengirim semua permintaan API secara paralel untuk efisiensi
     const promises = collections.map(collection => {
         const requestBody = { pagination: { limit: 1 }, where: { collectionAddresses: [collection.address] } };
         const options = { method: 'POST', headers: { 'X-Api-Key': 'MhBsxkU1z9fG6TofE59KqiiWV-YlYE8Q4awlLQehF3U', 'Content-Type': 'application/json' }, body: JSON.stringify(requestBody) };
         return fetch(url, options)
             .then(res => res.ok ? res.json() : null)
             .then(data => ({ name: collection.name, count: (data?.data?.[0]?.assetCount) || 0 }))
-            .catch(() => ({ name: collection.name, count: 0 })); // Menangani error jaringan
+            .catch(() => ({ name: collection.name, count: 0 }));
     });
 
     try {
         let results = await Promise.all(promises);
-        results.sort((a, b) => b.count - a.count); // Mengurutkan dari terbesar ke terkecil
-
+        results.sort((a, b) => b.count - a.count);
         const message = JSON.stringify({ type: 'sorted-data', data: results });
-
-        // Mengirim data ke semua browser yang terhubung
         wss.clients.forEach(client => {
             if (client.readyState === client.OPEN) {
                 client.send(message);
             }
         });
-        console.log(`Update dikirim pada ${new Date().toLocaleTimeString()}`);
+        console.log(`Update send at ${new Date().toLocaleTimeString()}`);
     } catch (error) {
-        console.error("Gagal memproses permintaan API:", error);
+        console.error("failed to process api request:", error);
     }
 };
 
 // --- Menjalankan Fungsi Secara Berkala ---
-// Interval 2 detik (2000 ms) adalah titik awal yang baik dan lebih aman
-setInterval(fetchDataAndBroadcast, 2000);
+// Peringatan: WebSocket & setInterval tidak akan berfungsi di Vercel Hobby Plan
+setInterval(fetchDataAndBroadcast, 5000); // Diubah ke 5 detik agar lebih aman
 
-// --- Menjalankan Server (Hanya untuk lokal) ---
+// --- Menjalankan Server ---
 server.listen(PORT, () => {
     console.log(`Server real-time berjalan di http://localhost:${PORT}`);
 });
 
 // --- Ekspor untuk Vercel ---
-// Ini memungkinkan Vercel untuk menjalankan aplikasi Anda
 export default app;
