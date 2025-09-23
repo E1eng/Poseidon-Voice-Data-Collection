@@ -1,12 +1,4 @@
 {
-  "headers": [
-    {
-      "source": "/(.*)",
-      "headers": [
-          
-      ]
-    }
-  ],
   "builds": [
     {
       "src": "server.js",
