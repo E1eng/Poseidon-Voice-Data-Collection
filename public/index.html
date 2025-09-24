@@ -14,7 +14,6 @@
     <meta name="twitter:creator" content="@EL3NG"> 
     
     <style>
-    /* Impor font Manrope dari Google Fonts */
     @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;700;900&display=swap');
     
     :root {
@@ -140,19 +139,17 @@
     }
     .flag-icon img { width: 32px; height: auto; border-radius: 4px; }
     
-    /* --- PERUBAHAN UKURAN FONT KARTU --- */
     .name { 
-        font-size: 1em; /* Ukuran nama dikecilkan */
+        font-size: 1em; 
         font-weight: 700; 
     }
     .card-count {
-        font-size: 1.5em; /* Ukuran angka dikecilkan */
+        font-size: 1.5em; 
         font-weight: 700;
         color: var(--text-primary); 
         min-width: 80px; 
         text-align: right;
     }
-    /* --- AKHIR PERUBAHAN --- */
 
     .site-footer {
         margin-top:60px; text-align: center;
@@ -161,15 +158,15 @@
     .footer-link {
     color: var(--text-secondary);
     text-decoration: none;
-    position: relative; /* Diperlukan untuk pseudo-element */
-    padding-bottom: 4px; /* Beri sedikit ruang untuk garis */
+    position: relative; 
+    padding-bottom: 4px; 
 }
 
 .footer-link::after {
     content: '';
     position: absolute;
     width: 100%;
-    transform: scaleX(0); /* Mulai dari lebar 0 */
+    transform: scaleX(0); 
     height: 2px;
     bottom: 0;
     left: 0;
@@ -179,7 +176,7 @@
 }
 
 .footer-link:hover::after {
-    transform: scaleX(1); /* Lebarkan menjadi 100% */
+    transform: scaleX(1); 
     transform-origin: bottom left;
 }
 
@@ -200,14 +197,13 @@
             font-size: 1.1em;
         }
 
-        /* --- PERUBAHAN UKURAN FONT KARTU DESKTOP --- */
         .name { 
-            font-size: 1.25em; /* Sesuaikan ukuran nama di desktop */
+            font-size: 1.25em; 
         }
         .card-count { 
-            font-size: 1.4em; /* Sesuaikan ukuran angka di desktop */
+            font-size: 1.4em;
         }
-        /* --- AKHIR PERUBAHAN --- */
+
     }
 
     @media (min-width: 1240px) {

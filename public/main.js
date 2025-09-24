@@ -7,13 +7,6 @@ const listEl = document.getElementById('data-list');
 const totalCountEl = document.getElementById('total-count-display');
 const countryCodeMap = { 'Indonesian': 'id', 'Spanish': 'es', 'Korean': 'kr', 'Portuguese': 'pt', 'Turkish': 'tr', 'Urdu': 'pk', 'Hindi': 'in', 'Arabic': 'sa', 'Russian': 'ru', 'Marathi': 'in', 'Mandarin': 'cn', 'Vietnamese': 'vn', 'French': 'fr', 'German': 'de', 'Japanese': 'jp', 'English': 'gb' };
 
-// =========================================================
-// 🔄 LOGIKA WEBSOCKET DIGANTI DENGAN HTTP POLLING 🔄
-// =========================================================
-
-/**
- * Mengambil data dari endpoint API baru dan memperbarui dashboard.
- */
 async function fetchData() {
     // 🟢 START LOADING: Tambahkan kelas loading ke body
     statusEl.textContent = 'SYNCING...';
@@ -28,7 +21,6 @@ async function fetchData() {
 
         const data = await response.json();
         
-        // Asumsi server.js mengembalikan { data: results }
         if (data && data.data) {
             statusEl.textContent = `LAST SYNC: ${new Date().toLocaleTimeString('id-ID')}`;
             updateDashboard(data.data);
@@ -40,14 +32,11 @@ async function fetchData() {
         console.error("Failed to fetch data:", error);
         statusEl.textContent = 'CONNECTION TERMINATED (API Error)';
     } finally {
-        // 🟢 END LOADING: Hapus kelas loading setelah request selesai
         document.body.classList.remove('is-loading');
     }
 }
 
-// Panggil fungsi segera setelah dimuat, lalu atur interval polling
 fetchData();
-// 🟢 PENGHEMATAN BIAYA: Polling setiap 30 detik (30000ms)
 setInterval(fetchData, 10000); 
 
 // =========================================================
@@ -58,8 +47,8 @@ setInterval(fetchData, 10000);
 function updateDashboard(data) {
     let totalCount = 0;
     
-    // Sortir sisi klien agar data berurutan jika tidak disortir oleh server
-    if (window.innerWidth >= 768) { /* server-side sort */ } else { data.sort((a, b) => a.name.localeCompare(b.name)); }
+    
+    // if (window.innerWidth >= 768) { /* server-side sort */ } else { data.sort((a, b) => a.name.localeCompare(b.name)); }
     listEl.innerHTML = '';
     
     data.forEach(item => {
@@ -72,7 +61,6 @@ function updateDashboard(data) {
         listEl.appendChild(card);
     });
 
-    // 🟢 BRANDING UX: Mengubah judul tab secara dinamis
     document.title = `🔥 ${new Intl.NumberFormat('id-ID').format(totalCount)} | PSDN Live Stats`;
     
     animateCount(totalCountEl, totalCount);
