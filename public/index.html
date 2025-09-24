@@ -3,8 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Poseidon Voice Data Collection</title>
+    <title>Poseidon Voice Data Collection</title> 
     <link rel="icon" type="image/x-icon" href="favicon.ico"> 
+
+    <meta property="og:title" content="Poseidon Voice Data Collection Dashboard" />
+    <meta property="og:description" content="Live statistics for 16 language data collections, sourced directly from the Story API. Updates every 30 seconds." />
+    <meta property="og:url" content="https://psdn-collection.eleng.xyz" />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary_large_image"> 
+    <meta name="twitter:creator" content="@EL3NG"> 
+    
     <style>
     /* Impor font Manrope dari Google Fonts */
     @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;700;900&display=swap');
@@ -30,6 +38,16 @@
         padding-top: 110px;
         box-sizing: border-box;
     }
+
+    /* 🟢 CSS UNTUK INDIKATOR LOADING/SYNCING 🟢 */
+    .is-loading #status { 
+        opacity: 0.5; 
+        animation: pulse 1s infinite alternate; 
+    }
+    @keyframes pulse { 
+        from { opacity: 0.5; } 
+        to { opacity: 1; } 
+    }
     
     #particles-js {
         position: fixed; width: 100%; height: 100%;
@@ -53,7 +71,7 @@
 
     .logo {
         display: flex; align-items: center; gap: 12px;
-        font-size: 1.1em; font-weight: 900;
+        font-size: 1em; font-weight: 900;
         text-decoration: none;
         
         background: linear-gradient(90deg, var(--accent-color), #ffffff, var(--accent-color));
@@ -78,10 +96,10 @@
     }
 
    #status {
-            font-family: 'Roboto Mono', monospace; font-size: 0.9em; 
-            color: var(--text-secondary); background-color: rgba(0,0,0,0.3);
-             border-radius: 6px; left: 0%; margin-left: 60px;
-        }
+        font-family: 'Roboto Mono', monospace; font-size: 0.9em; 
+        color: var(--text-secondary); background-color: rgba(0,0,0,0.3);
+        border-radius: 6px; left: 0%; margin-left: 60px;
+    }
     
     .total-card {
         background: var(--card-bg); border: 1px solid var(--border-color);
@@ -213,7 +231,7 @@
         </div>
         
         <div class="data-list" id="data-list">
-            </div>
+        </div>
 
         <footer class="site-footer">
             <p><a href="https://x.com/EL3NG" target="_blank" rel="noopener noreferrer" class="footer-link">Developed by eLeng</a></p>
@@ -222,10 +240,6 @@
 
     <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
 
-    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
-
-            <script src="main.js"></script> 
-</body>
-</html>
+    <script src="main.js"></script> 
 </body>
 </html>

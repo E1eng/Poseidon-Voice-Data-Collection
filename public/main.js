@@ -7,7 +7,6 @@ const listEl = document.getElementById('data-list');
 const totalCountEl = document.getElementById('total-count-display');
 const countryCodeMap = { 'Indonesian': 'id', 'Spanish': 'es', 'Korean': 'kr', 'Portuguese': 'pt', 'Turkish': 'tr', 'Urdu': 'pk', 'Hindi': 'in', 'Arabic': 'sa', 'Russian': 'ru', 'Marathi': 'in', 'Mandarin': 'cn', 'Vietnamese': 'vn', 'French': 'fr', 'German': 'de', 'Japanese': 'jp', 'English': 'gb' };
 
-
 // =========================================================
 // 🔄 LOGIKA WEBSOCKET DIGANTI DENGAN HTTP POLLING 🔄
 // =========================================================
@@ -16,9 +15,11 @@ const countryCodeMap = { 'Indonesian': 'id', 'Spanish': 'es', 'Korean': 'kr', 'P
  * Mengambil data dari endpoint API baru dan memperbarui dashboard.
  */
 async function fetchData() {
-    statusEl.textContent = 'CONNECTING...';
+    // 🟢 START LOADING: Tambahkan kelas loading ke body
+    statusEl.textContent = 'SYNCING...';
+    document.body.classList.add('is-loading'); 
+    
     try {
-        // Panggil endpoint API baru yang dibuat di server.js
         const response = await fetch('/api/data');
         
         if (!response.ok) {
@@ -38,12 +39,16 @@ async function fetchData() {
     } catch (error) {
         console.error("Failed to fetch data:", error);
         statusEl.textContent = 'CONNECTION TERMINATED (API Error)';
+    } finally {
+        // 🟢 END LOADING: Hapus kelas loading setelah request selesai
+        document.body.classList.remove('is-loading');
     }
 }
 
 // Panggil fungsi segera setelah dimuat, lalu atur interval polling
 fetchData();
-setInterval(fetchData, 5000); // Polling setiap 5 detik
+// 🟢 PENGHEMATAN BIAYA: Polling setiap 30 detik (30000ms)
+setInterval(fetchData, 10000); 
 
 // =========================================================
 // END OF POLLING LOGIC
@@ -52,9 +57,11 @@ setInterval(fetchData, 5000); // Polling setiap 5 detik
 
 function updateDashboard(data) {
     let totalCount = 0;
+    
     // Sortir sisi klien agar data berurutan jika tidak disortir oleh server
     if (window.innerWidth >= 768) { /* server-side sort */ } else { data.sort((a, b) => a.name.localeCompare(b.name)); }
     listEl.innerHTML = '';
+    
     data.forEach(item => {
         totalCount += item.count;
         const card = document.createElement('div');
@@ -64,6 +71,10 @@ function updateDashboard(data) {
         card.innerHTML = `<div class="card-info"><span class="flag-icon"><img src="${flagImageUrl}" alt="Bendera ${item.name}"></span><span class="name">${item.name}</span></div><div class="card-count">${new Intl.NumberFormat('id-ID').format(item.count)}</div>`;
         listEl.appendChild(card);
     });
+
+    // 🟢 BRANDING UX: Mengubah judul tab secara dinamis
+    document.title = `🔥 ${new Intl.NumberFormat('id-ID').format(totalCount)} | PSDN Live Stats`;
+    
     animateCount(totalCountEl, totalCount);
 }
 
